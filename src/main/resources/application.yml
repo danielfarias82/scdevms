@@ -10,6 +10,7 @@ experian:
     password: Roger2024
   services:
     url: https://uat-api.experian.cl/cl/cr/cedu0102/v1/cedulas/estado/obtener
+    irut_consolidado_morosidad: https://uat-api.experian.cl/cl/cr/irut0202/v1/morosidades/obtener
 
 logging:
   level:

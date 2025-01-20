@@ -7,46 +7,52 @@ import java.util.List;
 @Data
 public class ConsolidadoMorosidadResponse {
 
-    @JsonProperty("CodigoRetorno")
-    private String codigoRetorno;
-
-    @JsonProperty("ExisteDetalle")
-    private String existeDetalle;
-
-    @JsonProperty("NumAcreedores")
-    private String numAcreedores;
-
-    @JsonProperty("TotalDocImpago")
-    private String totalDocImpago;
-
-    @JsonProperty("Detalles")
-    private List<Detalle> detalles;
+    private List<Object> errors;
+    private boolean success;
+    private ResponseData data;
 
     @Data
-    public static class Detalle {
+    public static class ResponseData {
+        @JsonProperty("CodigoRetorno")
+        private String codigoRetorno;
 
-        @JsonProperty("TipoDeDoc")
-        private String tipoDeDoc;
+        @JsonProperty("ExisteDetalle")
+        private String existeDetalle;
 
-        @JsonProperty("FecDeVenc")
-        private String fecDeVenc;
+        @JsonProperty("NumAcreedores")
+        private String numAcreedores;
 
-        @JsonProperty("NombreAportante")
-        private String nombreAportante;
+        @JsonProperty("TotalDocImpago")
+        private String totalDocImpago;
 
-        @JsonProperty("TipoDeMoneda")
-        private String tipoDeMoneda;
+        @JsonProperty("Detalles")
+        private List<Detalle> detalles;
 
-        @JsonProperty("Monto")
-        private String monto;
+        @Data
+        public static class Detalle {
+            @JsonProperty("TipoDeDoc")
+            private String tipoDeDoc;
 
-        @JsonProperty("RutDeudorDirecto")
-        private String rutDeudorDirecto;
+            @JsonProperty("FecDeVenc")
+            private String fecDeVenc;
 
-        @JsonProperty("Direccion")
-        private String direccion;
+            @JsonProperty("NombreAportante")
+            private String nombreAportante;
 
-        @JsonProperty("Comuna")
-        private String comuna;
+            @JsonProperty("TipoDeMoneda")
+            private String tipoDeMoneda;
+
+            @JsonProperty("Monto")
+            private String monto;
+
+            @JsonProperty("RutDeudorDirecto")
+            private String rutDeudorDirecto;
+
+            @JsonProperty("Direccion")
+            private String direccion;
+
+            @JsonProperty("Comuna")
+            private String comuna;
+        }
     }
 }
