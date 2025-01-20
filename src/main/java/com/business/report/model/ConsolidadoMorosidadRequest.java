@@ -3,7 +3,8 @@ package com.business.report.model;
 import lombok.Data;
 
 @Data
-public class ExperianRequest {
+public class ConsolidadoMorosidadRequest {
+
     private String rut;
-    private String serie;
+
 }

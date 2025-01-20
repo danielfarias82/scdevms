@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+experian:
+  oauth2:
+    url: https://uat-us-api.experian.com/oauth2/v1/token
+    client-id: 5AUALtffLUEz3NxVVr9gS0WBImq9uskw
+    client-secret: qTaPTAEYFuGjhfJO
+    username: wsAPIGee
+    password: Roger2024
+  services:
+    url: https://uat-api.experian.cl/cl/cr/cedu0102/v1/cedulas/estado/obtener
+
+logging:
+  level:
+    org.springframework.security: OFF
