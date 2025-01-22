@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class MorosidadServiceImpl {
 
-    @Value("${experian.services.irut_consolidado_morosidad}")
+    @Value("${experian.services.iurl_deuda}")
     private String serviceUrl;
 
     private final RestTemplate restTemplate;

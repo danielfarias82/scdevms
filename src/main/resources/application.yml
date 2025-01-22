@@ -11,6 +11,7 @@ experian:
   services:
     url: https://uat-api.experian.cl/cl/cr/cedu0102/v1/cedulas/estado/obtener
     irut_consolidado_morosidad: https://uat-api.experian.cl/cl/cr/irut0202/v1/morosidades/obtener
+    iurl_deuda: https://api.experian.com/endpoint/deuda
 
 logging:
   level:
