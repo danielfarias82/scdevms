@@ -5,6 +5,7 @@ import com.business.report.model.DeudaResponse;
 import com.business.report.model.DestinoRequest;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +25,8 @@ public class DeudaService {
     private final RestTemplate restTemplate;
     private final TokenServiceImpl tokenService;
 
-    public DeudaService(RestTemplate restTemplate, TokenServiceImpl tokenService) {
+    // Inyectar el RestTemplate configurado con proxy
+    public DeudaService(@Qualifier("proxyRestTemplate") RestTemplate restTemplate, TokenServiceImpl tokenService) {
         this.restTemplate = restTemplate;
         this.tokenService = tokenService;
     }
@@ -33,16 +35,16 @@ public class DeudaService {
         // Obtener el token de acceso
         String token = tokenService.getAccessToken();
 
-        // Crear los encabezados
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
-        headers.set("Authorization", "Bearer " + token);
+        // Crear los encabezados para la consulta a Experian
+        HttpHeaders experianHeaders = new HttpHeaders();
+        experianHeaders.set("Content-Type", "application/json");
+        experianHeaders.set("Authorization", "Bearer " + token);
 
         // Crear la entidad de la solicitud
-        HttpEntity<DeudaRequest> requestEntity = new HttpEntity<>(request, headers);
+        HttpEntity<DeudaRequest> requestEntity = new HttpEntity<>(request, experianHeaders);
 
         try {
-            // Obtener respuesta como String
+            // Consultar Experian y obtener respuesta como String
             String responseString = restTemplate.postForObject(deudaServiceUrl, requestEntity, String.class);
             System.out.println("Respuesta de Experian: " + responseString);
 
@@ -53,17 +55,27 @@ public class DeudaService {
             // Mapear la respuesta al objeto DeudaResponse
             DeudaResponse deudaResponse = objectMapper.readValue(responseString, DeudaResponse.class);
 
+            // Validar si la respuesta es válida antes de enviar al destino
+            if (deudaResponse == null || deudaResponse.getResumen() == null) {
+                throw new RuntimeException("La respuesta de Experian no es válida o está incompleta.");
+            }
+
             // Construir el request para el servicio de destino
             DestinoRequest destinoRequest = new DestinoRequest();
             destinoRequest.setSzData(responseString); // JSON de la respuesta original
             destinoRequest.setRutCliente(request.getRut());
+            destinoRequest.setCodAccion("A");
+            destinoRequest.setCodCon("IR07");
+            destinoRequest.setIntCant(0);
+            destinoRequest.setSzModo("E");
 
-            // Enviar la solicitud al servicio de destino
+            // Crear los encabezados para el servicio de destino
             HttpHeaders destinoHeaders = new HttpHeaders();
             destinoHeaders.set("Content-Type", "application/json");
 
             HttpEntity<DestinoRequest> destinoEntity = new HttpEntity<>(destinoRequest, destinoHeaders);
 
+            // Enviar la solicitud al servicio de destino
             ResponseEntity<String> destinoResponse = restTemplate.postForEntity(destinoServiceUrl, destinoEntity,
                     String.class);
             System.out.println("Respuesta del servicio de destino: " + destinoResponse.getBody());

@@ -33,13 +33,13 @@ public class TokenServiceImpl {
     }
 
     public String getAccessToken() {
-        // Crear los encabezados
+        // Configurar los encabezados
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         headers.set("client_id", clientId);
         headers.set("client_secret", clientSecret);
 
-        // Crear el cuerpo de la solicitud
+        // Configurar el cuerpo con solo username y password
         Map<String, String> body = Map.of(
                 "username", username,
                 "password", password);
@@ -47,9 +47,12 @@ public class TokenServiceImpl {
         // Crear la entidad de la solicitud
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(body, headers);
 
-        // Realizar la solicitud al endpoint del token
         try {
+            // Realizar la solicitud al endpoint del token
             Map<String, Object> response = restTemplate.postForObject(tokenUrl, requestEntity, Map.class);
+            System.out.println("Respuesta del token: " + response);
+
+            // Verificar la respuesta
             if (response != null && response.containsKey("access_token")) {
                 return (String) response.get("access_token");
             } else {

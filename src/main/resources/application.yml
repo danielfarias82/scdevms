@@ -1,6 +1,14 @@
 server:
   port: 8090
 
+keystore:
+  path: classpath:experian-keystore.jks
+  password: 123456
+
+proxy:
+  host: webproxy.bns
+  port: 8080
+
 spring:
   jackson:
     deserialization:
@@ -13,6 +21,7 @@ experian:
     client-secret: qTaPTAEYFuGjhfJO
     username: wsAPIGee
     password: Roger2024
+
   services:
     url: https://uat-api.experian.cl/cl/cr/cedu0102/v1/cedulas/estado/obtener
     irut_consolidado_morosidad: https://uat-api.experian.cl/cl/cr/irut0202/v1/morosidades/obtener
