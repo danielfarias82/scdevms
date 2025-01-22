@@ -1,5 +1,10 @@
 server:
-  port: 8080
+  port: 8090
+
+spring:
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
 
 experian:
   oauth2:
@@ -11,7 +16,8 @@ experian:
   services:
     url: https://uat-api.experian.cl/cl/cr/cedu0102/v1/cedulas/estado/obtener
     irut_consolidado_morosidad: https://uat-api.experian.cl/cl/cr/irut0202/v1/morosidades/obtener
-    iurl_deuda: https://api.experian.com/endpoint/deuda
+    iurl_deuda: https://uat-api.experian.cl/cl/cr/irut1603/v1/deudas/obtener
+    destino: http://localhost:8080/api/v1/informes
 
 logging:
   level:

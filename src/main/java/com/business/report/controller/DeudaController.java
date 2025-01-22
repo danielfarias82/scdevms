@@ -1,7 +1,6 @@
 package com.business.report.controller;
 
 import com.business.report.model.DeudaRequest;
-import com.business.report.model.DeudaResponse;
 import com.business.report.service.impl.DeudaService;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +14,8 @@ public class DeudaController {
         this.deudaService = deudaService;
     }
 
-    @PostMapping
-    public DeudaResponse obtenerDeuda(@RequestBody DeudaRequest request) {
-        return deudaService.obtenerDeuda(request);
+    @PostMapping("/procesar")
+    public void procesarDeuda(@RequestBody DeudaRequest request) {
+        deudaService.procesarDeuda(request);
     }
 }
