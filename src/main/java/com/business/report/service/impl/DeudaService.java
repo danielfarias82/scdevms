@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import com.business.report.model.DeudaWrapperResponse;
 
 @Service
 public class DeudaService {
@@ -25,7 +26,6 @@ public class DeudaService {
     private final RestTemplate restTemplate;
     private final TokenServiceImpl tokenService;
 
-    // Inyectar el RestTemplate configurado con proxy
     public DeudaService(@Qualifier("proxyRestTemplate") RestTemplate restTemplate, TokenServiceImpl tokenService) {
         this.restTemplate = restTemplate;
         this.tokenService = tokenService;
@@ -52,12 +52,31 @@ public class DeudaService {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-            // Mapear la respuesta al objeto DeudaResponse
-            DeudaResponse deudaResponse = objectMapper.readValue(responseString, DeudaResponse.class);
+            // Mapear la respuesta al objeto DeudaWrapperResponse
+            DeudaWrapperResponse wrapperResponse = objectMapper.readValue(responseString, DeudaWrapperResponse.class);
 
-            // Validar si la respuesta es válida antes de enviar al destino
-            if (deudaResponse == null || deudaResponse.getResumen() == null) {
-                throw new RuntimeException("La respuesta de Experian no es válida o está incompleta.");
+            if (wrapperResponse == null || wrapperResponse.getData() == null) {
+                throw new RuntimeException("La respuesta de Experian no contiene datos válidos.");
+            }
+
+            DeudaResponse deudaResponse = wrapperResponse.getData();
+
+            // Validar si la respuesta tiene el resumen esperado
+            if (deudaResponse.getResumen() == null) {
+                throw new RuntimeException("La respuesta de Experian no contiene un resumen válido.");
+            }
+
+            // Verificar si hay detalle basado en "ExisteDetalle"
+            String existeDetalle = deudaResponse.getResumen().getExisteDetalle();
+            if ("N".equalsIgnoreCase(existeDetalle)) {
+                System.out.println("No hay detalles en la respuesta de Experian.");
+            } else if ("S".equalsIgnoreCase(existeDetalle)) {
+                if (deudaResponse.getDetalle() == null || deudaResponse.getDetalle().isEmpty()) {
+                    throw new RuntimeException("Se esperaba un detalle en la respuesta, pero no se encontró.");
+                }
+                System.out.println("Detalle encontrado: " + deudaResponse.getDetalle());
+            } else {
+                throw new RuntimeException("Valor inesperado para 'ExisteDetalle': " + existeDetalle);
             }
 
             // Construir el request para el servicio de destino

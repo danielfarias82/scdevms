@@ -1,9 +1,8 @@
 package com.business.report.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class DeudaResponse {
@@ -15,7 +14,8 @@ public class DeudaResponse {
     private Resumen resumen;
 
     @JsonProperty("Detalle")
-    private List<Detalle> detalle;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private java.util.List<Detalle> detalle;
 
     @Data
     public static class Resumen {
